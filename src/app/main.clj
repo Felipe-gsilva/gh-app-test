@@ -1,36 +1,72 @@
 (ns app.main
-  (:require [app.webhooks :as webhooks]
-            [clj-github.changeset :as changeset]
-            [clj-github-app.client :as client]
-            [clj-github.httpkit-client :as github-client]))
+  (:require
+   [clojure.string :as str]
+   [clj-github.changeset :as changeset]
+   [clj-github-app.client :as c]
+   [clj-github-app.token-manager :as token-manager]
+   [clj-github.httpkit-client :as github-client]))
 
-(def client (github-client/new-client
-             {:app-id (System/getenv "APP_ID")
-              :private-key (System/getenv "private-key")}))
-
-(github-client/request client {:path "/api/github/..."
-                               :method :get})
-
-(def github-api-url "https://api.github.com")
-(def github-app-id (System/getenv "GITHUB_APP_ID"))
-(def github-app-private-key (System/getenv "GITHUB_APP_PRIVATE_KEY_PEM"))
+(defn inspect [a] (prn a) a)
 
 (def commit-message "Commited by moclojer sync app!!")
 
-(def github-client
-  (client/make-app-client github-api-url github-app-id github-app-private-key {}))
+(def github-api-url "https://api.github.com")
+(def github-app-id "")
+(def install-id nil)
+(def github-app-private-key (slurp ""))
 
-(defn update-file [client owner repo branch file-path new-content]
-  (-> (changeset/from-branch! client owner repo branch)
+(def gh-client (github-client/new-client
+                {:app-id github-app-id
+                 :private-key  github-app-private-key}))
+
+(def tk (token-manager/make-token-manager github-api-url github-app-id github-app-private-key))
+
+(defn get-installation-token [installation-id]
+  (token-manager/get-installation-token tk installation-id))
+
+(defn make-authenticated-request [installation-id endpoint]
+  (let [token (get-installation-token installation-id)
+        headers {"Authorization" (str "Bearer " token)
+                 "Accept" "application/vnd.github+json"}]
+    ;; Make your HTTP request with the headers
+    (github-client/request
+     gh-client
+     {:method "GET"
+      :path (inspect (str github-api-url endpoint))
+      :headers (inspect headers)})))
+
+(make-authenticated-request
+ install-id "/app")
+
+(def github-client
+  (c/make-app-client
+   github-api-url
+   github-app-id
+   github-app-private-key
+   {}))
+
+(defn update-file
+  [owner repo branch file-path new-content]
+  (when (not (or (str/includes? "moclojer" file-path)
+                 (str/includes? "mocks" file-path)))
+    (str "moclojer/mocks/" (take-last 1 (str/split "/" file-path))))
+  (-> (changeset/from-branch! gh-client owner repo branch)
       (changeset/put-content file-path new-content)
       (changeset/commit! (str commit-message \n "carlos"))
       (changeset/update-branch!)))
 
-(defn pull-file [client org repo base-revision changes file-path]
+(defn pull-file
+  [org repo base-revision changes file-path]
   (-> (changeset/get-content
-       {:client client
+       {:client gh-client
         :org  org
         :repo repo
         :base-revision base-revision
         :changes changes}
        file-path)))
+
+(defn main [])
+
+(comment
+  (github-client/request gh-client {:path "/api/github/user"
+                                    :method :get}))
