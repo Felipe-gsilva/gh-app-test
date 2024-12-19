@@ -8,21 +8,32 @@
 
 (defn inspect [a] (prn a) a)
 
-(def commit-message "Commited by moclojer sync app!!")
+;; testing push event into webhook
+
+(def commit-message (str "Auto genereted commit by moclojer sync app!!"
+                         " "))
 
 (def github-api-url "https://api.github.com")
 (def github-app-id "")
 (def install-id nil)
 (def github-app-private-key (slurp ""))
 
-(def gh-client (github-client/new-client
-                {:app-id github-app-id
-                 :private-key  github-app-private-key}))
+(def gh-client
+  (github-client/new-client
+   {:app-id github-app-id
+    :private-key  github-app-private-key}))
 
-(def tk (token-manager/make-token-manager github-api-url github-app-id github-app-private-key))
+(def tk
+  (token-manager/make-token-manager
+   github-api-url
+   github-app-id
+   github-app-private-key))
 
-(defn get-installation-token [installation-id]
-  (token-manager/get-installation-token tk installation-id))
+(defn get-installation-token
+  [installation-id]
+  (token-manager/get-installation-token
+   tk
+   installation-id))
 
 (defn make-authenticated-request [installation-id endpoint]
   (let [token (get-installation-token installation-id)
