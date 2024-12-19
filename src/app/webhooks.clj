@@ -15,3 +15,6 @@
       (let [parsed-payload  (json/read-str payload keyword)]
         ;; process your webhook here
         {:status 201 :body "This is fine."}))))
+
+
+(def smee "")
