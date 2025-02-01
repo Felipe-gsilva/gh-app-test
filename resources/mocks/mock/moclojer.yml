@@ -4,19 +4,19 @@
 # Documentation: https://docs.moclojer.com
 # Source Code: https://github.com/moclojer/moclojer
 
-# This mock register route: GET /hello/:username
+# This mock register route: GET /hello/:uname
 - endpoint:
     # Note: the method could be omitted because GET is the default
     method: GET
-    path: /hello/:username
+    path: /hello/:uname
     response:
       # Note: the status could be omitted because 200 is the default
       status: 200
       headers:
         Content-Type: application/json
       # Note: the body will receive the value passed in the url using the
-      # :username placeholder
+      # :uname placeholder
       body: |
         {
-          "hello": "{{path-params.username}}!"
+          "hello": "{{path-params.uname}}!"
         }
