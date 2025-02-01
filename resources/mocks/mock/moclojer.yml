@@ -1,1 +1,22 @@
-IyBUaGUgZm9sbG93aW5nIHNjaGVtYSBpcyBhbiBleGFtcGxlIG9mIGhvdyB5b3UgY2FuCiMgdXNlIHRoZSBwb3dlciBvZiBNb2Nsb2plciB0byBjcmVhdGUgeW91ciBhcHBsaWNhdGlvbnMuCiMKIyBEb2N1bWVudGF0aW9uOiBodHRwczovL2RvY3MubW9jbG9qZXIuY29tCiMgU291cmNlIENvZGU6IGh0dHBzOi8vZ2l0aHViLmNvbS9tb2Nsb2plci9tb2Nsb2plcgoKIyBUaGlzIG1vY2sgcmVnaXN0ZXIgcm91dGU6IEdFVCAvaGVsbG8vOnVzZXJuYW1lCi0gZW5kcG9pbnQ6CiAgICAjIE5vdGU6IHRoZSBtZXRob2QgY291bGQgYmUgb21pdHRlZCBiZWNhdXNlIEdFVCBpcyB0aGUgZGVmYXVsdAogICAgbWV0aG9kOiBHRVQKICAgIHBhdGg6IC9oZWxsby86dXNlcm5hbWUKICAgIHJlc3BvbnNlOgogICAgICAjIE5vdGU6IHRoZSBzdGF0dXMgY291bGQgYmUgb21pdHRlZCBiZWNhdXNlIDIwMCBpcyB0aGUgZGVmYXVsdAogICAgICBzdGF0dXM6IDIwMAogICAgICBoZWFkZXJzOgogICAgICAgIENvbnRlbnQtVHlwZTogYXBwbGljYXRpb24vanNvbgogICAgICAjIE5vdGU6IHRoZSBib2R5IHdpbGwgcmVjZWl2ZSB0aGUgdmFsdWUgcGFzc2VkIGluIHRoZSB1cmwgdXNpbmcgdGhlCiAgICAgICMgOnVzZXJuYW1lIHBsYWNlaG9sZGVyCiAgICAgIGJvZHk6IHwKICAgICAgICB7CiAgICAgICAgICAiaGVsbG8iOiAie3twYXRoLXBhcmFtcy51c2VybmFtZX19ISIKICAgICAgICB9Cg==
+# The following schema is an example of how you can
+# use the power of Moclojer to create your applications.
+#
+# Documentation: https://docs.moclojer.com
+# Source Code: https://github.com/moclojer/moclojer
+
+# This mock register route: GET /hello/:username
+- endpoint:
+    # Note: the method could be omitted because GET is the default
+    method: GET
+    path: /hello/:username
+    response:
+      # Note: the status could be omitted because 200 is the default
+      status: 200
+      headers:
+        Content-Type: application/json
+      # Note: the body will receive the value passed in the url using the
+      # :username placeholder
+      body: |
+        {
+          "hello": "{{path-params.username}}!"
+        }
