@@ -11,7 +11,7 @@
     path: /hello/:username
     response:
       # Note: the status could be omitted because 200 is the default
-      status: 200
+      status: 500
       headers:
         Content-Type: application/json
       # Note: the body will receive the value passed in the url using the
